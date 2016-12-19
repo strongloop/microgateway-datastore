@@ -1,0 +1,32 @@
+{
+  "name": "microgateway-datastore",
+  "version": "1.0.0",
+  "description": "datastore used by the microgateway",
+  "main": "index.js",
+  "bin": {
+    "microgateway-datastore": "apim-export.js"
+  },
+  "dependencies": {
+    "apiconnect-cli-logger": "^1.2.4",
+    "bluebird": "^3.4.6",
+    "forever-monitor": "^1.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/strongloop/microgateway-datastore.git"
+  },
+  "keywords": [
+    "datastore",
+    "microgateway"
+  ],
+  "author": "Jeremy Geddes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/strongloop/microgateway-datastore/issues"
+  },
+  "homepage": "https://github.com/strongloop/microgateway-datastore#readme"
+}
