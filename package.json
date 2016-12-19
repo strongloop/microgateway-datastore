@@ -6,7 +6,8 @@
   "dependencies": {
     "apiconnect-cli-logger": "^1.2.4",
     "bluebird": "^3.4.6",
-    "forever-monitor": "^1.7.1"
+    "forever-monitor": "^1.7.1",
+    "microgateway-util": "git+ssh://git@github.com/strongloop/microgateway-util.git#datastore-microservice"
   },
   "devDependencies": {},
   "scripts": {
