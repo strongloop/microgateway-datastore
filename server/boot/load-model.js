@@ -14,14 +14,14 @@ var url = require('url');
 var checkSecurity = require('./check-security');
 var ip = require('ip');
 var logger = require('apiconnect-cli-logger/logger.js')
-        .child({ loc: 'microgateway:datastore:server:boot:load-model' });
+        .child({ loc: 'microgateway-datastore:server:boot:load-model' });
 var sgwapimpull = require('../../apim-pull');
 var apimpull = sgwapimpull.pull;
 var apimdecrypt = sgwapimpull.decrypt;
 var utils = require('../../common/utils/utils');
 var getPreviousSnapshotDir = utils.getPreviousSnapshotDir;
 var setPreviousSnapshotDir = utils.setPreviousSnapshotDir;
-var environment = require('../../../utils/environment');
+var environment = require('microgateway-util/utils/environment.js');
 var APIMANAGER = environment.APIMANAGER;
 var APIMANAGER_PORT = environment.APIMANAGER_PORT;
 var APIMANAGER_CATALOG = environment.APIMANAGER_CATALOG;

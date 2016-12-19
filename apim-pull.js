@@ -7,7 +7,7 @@
  * Module dependencies
  */
 var logger = require('apiconnect-cli-logger/logger.js')
-        .child({ loc: 'microgateway:datastore:apim-pull' });
+        .child({ loc: 'microgateway-datastore:apim-pull' });
 var fs = require('fs-extra');
 var path = require('path');
 var request = require('request');
@@ -16,7 +16,7 @@ var extend = require('util')._extend;
 
 var Crypto = require('crypto');
 
-var environment = require('../utils/environment');
+var environment = require('microgateway-util/utils/environment.js');
 var KEYNAME = environment.KEYNAME;
 var PASSWORD = environment.PASSWORD;
 var gatewayMain = path.join(__dirname, '..');
