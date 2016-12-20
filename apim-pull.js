@@ -19,7 +19,7 @@ var Crypto = require('crypto');
 var environment = require('microgateway-util/utils/environment.js');
 var KEYNAME = environment.KEYNAME;
 var PASSWORD = environment.PASSWORD;
-var gatewayMain = path.join(__dirname, '..');
+var gatewayMain = path.join(__dirname, '../..');
 var keyFile = path.join(gatewayMain, KEYNAME);
 var passFile = path.join(gatewayMain, PASSWORD);
 

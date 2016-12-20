@@ -34,10 +34,10 @@ var WH_UNSUBSCRIBE = 1;
 
 var project = require('apiconnect-project');
 
-var rootConfigPath = path.join(__dirname, '../../../config');
+var rootConfigPath = path.join(__dirname, '../../../../config');
 var definitionsDir = path.join(rootConfigPath, 'default');
 
-var gatewayMain = path.join(__dirname, '../../..');
+var gatewayMain = path.join(__dirname, '../../../..');
 var keyFile = path.join(gatewayMain, KEYNAME);
 var version = '1.0.0';
 var mixedProtocols = false;
