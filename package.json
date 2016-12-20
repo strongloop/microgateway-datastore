@@ -7,11 +7,11 @@
     "apiconnect-cli-logger": "^1.2.4",
     "bluebird": "^3.4.6",
     "forever-monitor": "^1.7.1",
-    "microgateway-util": "git+ssh://git@github.com/strongloop/microgateway-util.git#datastore-microservice"
+    "microgateway-util": "git+ssh://git@github.com/strongloop/microgateway-util.git"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "npm test"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
