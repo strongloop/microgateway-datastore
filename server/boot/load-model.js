@@ -13,6 +13,7 @@ var Request = require('request');
 var url = require('url');
 var checkSecurity = require('./check-security');
 var ip = require('ip');
+var redis = require("redis");
 var logger = require('apiconnect-cli-logger/logger.js')
         .child({ loc: 'microgateway-datastore:server:boot:load-model' });
 var sgwapimpull = require('../../apim-pull');
@@ -46,6 +47,7 @@ var https = false;
 var models = [];
 var apimanager = {};
 var currentWebhook;
+var pub = redis.createClient(process.env.REDIS_SERVER_PORT,process.env.REDIS_SERVER);
 
 /**
  * Creates a model type
@@ -793,6 +795,51 @@ function loadConfigFromFS(app, apimanager, models, dir, uid, cb) {
       populateModelsWithLocalData(app, YAMLfiles, cfg, dir, uid, cb);
     });
   }
+
+  // publish data to redis
+  var pubcontent = {'snapshotId': uid, 'models': { 'api':[], 'product':[]}};
+  async.series([
+    function(callback) {
+      app.models['api'].find(
+        { where: { 'snapshot-id': uid } },
+          function(err, instance) {
+            if (err) {
+              logger.error('Unsuccessful find \'api\' datastore model');
+              cb(err);
+              return;
+            }
+          instance.forEach(function (api_instance){
+            pubcontent.models.api.push(JSON.parse(JSON.stringify(api_instance)));
+          });
+        });
+      callback();
+    },
+    function(callback) {
+      app.models['product'].find(
+        { where: { 'snapshot-id': uid } },
+          function(err, instance) {
+            if (err) {
+              logger.error('Unsuccessful find \'product\' datastore model');
+              cb(err);
+              return;
+            }
+          instance.forEach(function (product_instance){
+            pubcontent.models.product.push(JSON.parse(JSON.stringify(product_instance)));
+          });
+        });
+      callback();
+    },
+    function(callback) {
+      pub.publish(process.env.REDIS_PUBSUB_CHANNEL, JSON.stringify(pubcontent));
+      callback();
+    } ],
+    function(err) {
+      if (err) {
+        logger.error('Unsuccessful publish data to redis server');
+      } else {
+        logger.info('Successful publish data to redis server');
+      }
+  });
 }
 
 /*
