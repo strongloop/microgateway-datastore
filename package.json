@@ -5,8 +5,17 @@
   "main": "index.js",
   "dependencies": {
     "apiconnect-cli-logger": "^1.2.4",
+    "apiconnect-project": "^1.0.23",
     "bluebird": "^3.4.6",
+    "compression": "^1.6.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
     "forever-monitor": "^1.7.1",
+    "fs-extra": "^1.0.0",
+    "json-refs": "^2.1.6",
+    "loopback": "^2.26.2",
+    "loopback-boot": "^2.16.0",
+    "loopback-component-explorer": "^4.0.1",
     "microgateway-util": "git+ssh://git@github.com/strongloop/microgateway-util.git"
   },
   "devDependencies": {},
