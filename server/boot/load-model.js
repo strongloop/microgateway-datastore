@@ -6,7 +6,7 @@
 var fs = require('fs-extra');
 var path = require('path');
 var async = require('async');
-var YAML = require('yamljs');
+var YAML = require('js-yaml');
 var constants = require('constants');
 var Crypto = require('crypto');
 var Request = require('request');
@@ -841,7 +841,7 @@ function populateModelsWithLocalData(app, YAMLfiles, apicCfg, dir, uid, cb) {
           var readfile;
           try {
             // read the content of the files into memory and parse as JSON
-            readfile = YAML.load(file);
+            readfile = YAML.load(fs.loadFileSync(file, 'utf8'));
 
           } catch (e) {
             fileCallback(e);
@@ -1179,7 +1179,7 @@ function expandAPIData(apidoc, dir) {
         apidoc['x-ibm-configuration'].assembly['$ref']) {
       var assemblyFile = path.join(dir,
               apidoc['x-ibm-configuration'].assembly['$ref']);
-      var assembly = YAML.load(assemblyFile);
+      var assembly = YAML.load(fs.readFileSync(assemblyFile, 'utf8'));
       apidoc['x-ibm-configuration'].assembly = assembly;
     }
 

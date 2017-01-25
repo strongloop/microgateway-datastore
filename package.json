@@ -12,10 +12,11 @@
     "express": "^4.13.4",
     "forever-monitor": "^1.7.0",
     "fs-extra": "^0.30.0",
+    "js-yaml": "^3.7.0",
     "json-refs": "^2.1.5",
     "loopback": "^2.26.2",
     "loopback-boot": "^2.16.0",
-    "loopback-component-explorer": "^2.3.0",    
+    "loopback-component-explorer": "^2.3.0",
     "microgateway-util": "strongloop/microgateway-util"
   },
   "devDependencies": {},
