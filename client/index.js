@@ -9,7 +9,7 @@ var request = require('request');
 var url = require('url');
 var logger = require('apiconnect-cli-logger/logger.js')
         .child({ loc: 'microgateway:datastore:client' });
-var host = '127.0.0.1'; // data-store's listening interface
+var host = process.env.DATASTORE_HOST || '127.0.0.1'; // data-store's listening interface
 
 /**
  * Finds the default catalog/environment for a specific provider
