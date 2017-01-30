@@ -8,7 +8,7 @@ var async = require('async');
 var logger = require('apiconnect-cli-logger/logger.js')
         .child({ loc: 'microgateway:datastore:optimizedData' });
 var jsonRefs = require('json-refs');
-var getInterval = require('microgateway-util/rate-limiting/get-interval.js');
+var getInterval = require('../../../policies/rate-limiting/get-interval');
 
 var ALLPLANS = 'ALLPLANS';
 function createProductOptimizedEntry(app, ctx) {
@@ -180,7 +180,6 @@ function gatherDataCreateOptimizedEntry(app, locals, isWildcard, gatherCallback)
       grabCatalog(
         app,
         locals.snapshot,
-        locals.product,
         function(err, catalog) {
           if (err) {
             callback(err);
@@ -245,29 +244,15 @@ function gatherDataCreateOptimizedEntry(app, locals, isWildcard, gatherCallback)
     });
 }
 
-function grabCatalog(app, snapshot, product, cb) {
-  var query = {
-    where: {
-      'snapshot-id': snapshot,
-      id: product.id } };
-
-  app.models.product.findOne(query, function(err, myproduct) {
+function grabCatalog(app, snapshot, cb) {
+  // only one catalog
+  var query = { where: { 'snapshot-id': snapshot } };
+  app.models.catalog.findOne(query, function(err, catalog) {
     if (err) {
       cb(err);
-      return;
     }
-    var query = {
-      where: {
-        'snapshot-id': snapshot,
-        id: myproduct.catalog.id } };
-    app.models.catalog.findOne(query, function(err, catalog) {
-      if (err) {
-        cb(err);
-        return;
-      }
-      logger.debug('grabCatalog found: %j', catalog);
-      cb(null, catalog);
-    });
+    logger.debug('grabCatalog found: %j', catalog);
+    cb(null, catalog);
   });
 }
 
