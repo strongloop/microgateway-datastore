@@ -8,7 +8,7 @@ var async = require('async');
 var logger = require('apiconnect-cli-logger/logger.js')
         .child({ loc: 'microgateway:datastore:optimizedData' });
 var jsonRefs = require('json-refs');
-var getInterval = require('../../../policies/rate-limiting/get-interval');
+var getInterval = require('microgateway-util/rate-limiting/get-interval.js');
 
 var ALLPLANS = 'ALLPLANS';
 function createProductOptimizedEntry(app, ctx) {
