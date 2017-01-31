@@ -19,26 +19,38 @@ process.on('disconnect', function() {
 var app = module.exports = loopback();
 
 app.start = function() {
-  // start the web server
-  var server = app.listen(process.env.DATASTORE_PORT || 0, '0.0.0.0', function() {
-    app.emit('started');
-    var baseUrl = app.get('url').replace(/\/$/, '');
-    var port = app.get('port');
-    process.env.DATASTORE_PORT = port;
-    logger.debug('Web server listening at: %s port: %s', baseUrl, port);
-    // save to file for explorer
-    storeDataStorePort(port);
-    // send to gateway
-    process.send({ DATASTORE_PORT: port });
+  // starting elsewhere.. don't start here..
+  if (process.env.DATASTORE_PORT && process.env.DATASTORE_HOST) {
+    storeDataStorePort(process.env.DATASTORE_PORT);
+    process.send({ DATASTORE_PORT: process.env.DATASTORE_PORT });
+  }
+  else {
+    // start the web server
+    var server = app.listen(process.env.DATASTORE_PORT || 0, '0.0.0.0', function() {
+      app.emit('started');
+      var baseUrl = app.get('url').replace(/\/$/, '');
+      var port = app.get('port');
+      process.env.DATASTORE_PORT = port;
+      logger.debug('Web server listening at: %s port: %s', baseUrl, port);
+      // save to file for explorer
+      storeDataStorePort(port);
+      // send to gateway
+      process.send({ DATASTORE_PORT: port });
 
-    if (app.get('loopback-component-explorer')) {
-      var explorerPath = app.get('loopback-component-explorer').mountPath;
-      logger.debug('Browse your REST API at %s%s', baseUrl, explorerPath);
-    }
-  });
+      if (app.get('loopback-component-explorer')) {
+        var explorerPath = app.get('loopback-component-explorer').mountPath;
+        logger.debug('Browse your REST API at %s%s', baseUrl, explorerPath);
+      }
+    });
+  }
 
   app.close = function(cb) {
-    server.close(cb);
+    if (!process.env.DATASTORE_HOST) {
+      server.close(cb);
+    }
+    else {
+      logger.debug('app.close: not started, dont stop');
+    }
   };
 };
 
