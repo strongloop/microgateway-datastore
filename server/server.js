@@ -20,7 +20,7 @@ var app = module.exports = loopback();
 
 app.start = function() {
   // starting elsewhere.. don't start here..
-  if (process.env.DATASTORE_PORT && process.env.DATASTORE_PORT) {
+  if (process.env.DATASTORE_PORT && process.env.DATASTORE_HOST) {
     storeDataStorePort(process.env.DATASTORE_PORT);
     process.send({ DATASTORE_PORT: process.env.DATASTORE_PORT });
   }
@@ -45,7 +45,7 @@ app.start = function() {
   }
 
   app.close = function(cb) {
-    if (!process.env.DATASTORE_PORT) {
+    if (!process.env.DATASTORE_HOST) {
       server.close(cb);
     }
     else {

@@ -16,7 +16,7 @@
     "loopback": "^2.26.2",
     "loopback-boot": "^2.16.0",
     "loopback-component-explorer": "^2.3.0",    
-    "microgateway-util": "strongloop/microgateway-util"
+    "microgateway-util": "^1.x"
   },
   "devDependencies": {},
   "scripts": {
