@@ -841,7 +841,7 @@ function populateModelsWithLocalData(app, YAMLfiles, apicCfg, dir, uid, cb) {
           var readfile;
           try {
             // read the content of the files into memory and parse as JSON
-            readfile = YAML.load(fs.loadFileSync(file, 'utf8'));
+            readfile = YAML.load(fs.readFileSync(file, 'utf8'));
 
           } catch (e) {
             fileCallback(e);
