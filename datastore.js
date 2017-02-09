@@ -1,7 +1,7 @@
-// Copyright IBM Corp. 2016. All Rights Reserved.
-// Node module: microgateway
-// US Government Users Restricted Rights - Use, duplication or disclosure
-// restricted by GSA ADP Schedule Contract with IBM Corp.
+// Copyright IBM Corp. 2017. All Rights Reserved.
+// Node module: microgateway-datastore
+// LICENSE: Apache 2.0, https://www.apache.org/licenses/LICENSE-2.0
+
 
 'use strict';
 
