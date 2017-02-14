@@ -1,4 +1,4 @@
-{
+  {
   "name": "microgateway-datastore",
   "version": "1.0.0",
   "description": "datastore used by the microgateway",
@@ -25,16 +25,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strongloop/microgateway-datastore.git"
+    "url": "git+https://github.com/ibm-apiconnect/microgateway-datastore.git"
   },
   "keywords": [
     "datastore",
     "microgateway"
   ],
-  "author": "Jeremy Geddes",
-  "license": "ISC",
+  "author": "IBM",
+  "license": "Apache 2.0",
   "bugs": {
-    "url": "https://github.com/strongloop/microgateway-datastore/issues"
+    "url": "https://github.com/ibm-apiconnect/microgateway-datastore/issues"
   },
-  "homepage": "https://github.com/strongloop/microgateway-datastore#readme"
+  "homepage": "https://github.com/ibm-apiconnect/microgateway-datastore#readme"
 }
