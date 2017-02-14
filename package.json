@@ -1,4 +1,4 @@
-  {
+{
   "name": "microgateway-datastore",
   "version": "1.0.0",
   "description": "datastore used by the microgateway",
