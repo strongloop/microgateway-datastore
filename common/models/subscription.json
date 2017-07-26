@@ -57,7 +57,7 @@
       "title": "string"
     },
     "plan-registration": {
-      "apis": [],
+      "apis": [ "any" ],
       "id": "string",
       "plan": {
         "name": "string",

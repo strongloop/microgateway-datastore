@@ -19,8 +19,7 @@
       "url": "string"
     },
     "document": {
-      "apis": 
-        {},
+      "apis": "object",
       "info": {
         "name": "string",
         "title": "string",
