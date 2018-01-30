@@ -11,6 +11,24 @@ var logger = require('apiconnect-cli-logger/logger.js')
         .child({ loc: 'microgateway:datastore:client' });
 var host = process.env.DATASTORE_HOST || '127.0.0.1'; // data-store's listening interface
 
+const useCache = !!process.env.DATASTORE_USE_LOCAL_CACHE;
+const cache = {};
+
+if (useCache) {
+  logger.info('Datastore client is using local cache');
+}
+
+function cachedPromise(fn, queryurl) {
+  return new Promise((resolve, reject) => {
+    const cached = cache[queryurl];
+    if (cached && useCache) {
+      resolve(cached);
+    } else {
+      fn(resolve, reject);
+    }
+  });
+}
+
 /**
  * Finds the default catalog/environment for a specific provider
  * organization
@@ -33,7 +51,7 @@ exports.apimGetDefaultCatalog = function(snapshot, orgName) {
     query: { filter: queryfilter } };
   var queryurl = url.format(queryurlObj);
 
-  return new Promise(function(resolve, reject) {
+  return cachedPromise((resolve, reject) => {
     request({ url: queryurl, json: true }, function(error, response, body) {
       logger.debug('error: ', error);
       //logger.debug('body: %j', body);
@@ -45,12 +63,13 @@ exports.apimGetDefaultCatalog = function(snapshot, orgName) {
       var catalogs = body;
       logger.debug('catalog returned: %j', catalogs);
       if (catalogs.length === 1) {
+        cache[queryurl] = catalogs[0].name;
         resolve(catalogs[0].name);
       } else {
         resolve(null);
       }
     });
-  });
+  }, queryurl);
 };
 
 /**
@@ -75,21 +94,27 @@ exports.grabAPI = function(context, callback) {
   var queryurl = url.format(queryurlObj);
   var api = {};
 
-  request(
-    { url: queryurl, json: true },
-    function(error, response, body) {
-      logger.debug('error: ', error);
-      // logger.debug('body: %j' , body);
-      // logger.debug('response: %j' , response);
-      if (error) {
-        callback(error);
-        logger.debug('grabAPI error exit');
-        return;
-      }
-      api = body;
-      logger.debug('grabAPI request exit');
-      callback(null, api[0]); // there should only be one result
-    });
+  const cached = cache[queryurl];
+  if (cached && useCache) {
+    callback(null, cached)
+  } else {
+    request(
+      { url: queryurl, json: true },
+      function(error, response, body) {
+        logger.debug('error: ', error);
+        // logger.debug('body: %j' , body);
+        // logger.debug('response: %j' , response);
+        if (error) {
+          callback(error);
+          logger.debug('grabAPI error exit');
+          return;
+        }
+        api = body;
+        logger.debug('grabAPI request exit');
+        cache[queryurl] = api[0];
+        callback(null, api[0]); // there should only be one result
+      });
+  }
   logger.debug('grabAPI exit');
 };
 
@@ -104,7 +129,7 @@ exports.getCurrentSnapshot = function() {
   var queryurl = url.format(queryurlObj);
   // send request to optimizedData model from data-store
   // for matching API(s)
-  return new Promise(function(resolve, reject) {
+  return cachedPromise((resolve, reject) => {
     request({ url: queryurl, json: true }, function(error, response, body) {
       logger.debug('error: ', error);
       //logger.debug('body: %j', body);
@@ -116,9 +141,10 @@ exports.getCurrentSnapshot = function() {
       }
       var snapshot = body;
       logger.debug('snapshot: ', snapshot.snapshot.id);
+      cache[queryurl] = snapshot.snapshot.id;
       resolve(snapshot.snapshot.id);
     });
-  });
+  }, queryurl);
 };
 
 exports.releaseCurrentSnapshot = function(id) {
@@ -134,7 +160,7 @@ exports.releaseCurrentSnapshot = function(id) {
 
   // send request to optimizedData model from data-store
   // for matching API(s)
-  return new Promise(function(resolve, reject) {
+  return cachedPromise((resolve, reject) => {
     request({ url: queryurl }, function(error, response, body) {
       logger.debug('error: ', error);
       logger.debug('body: %j', body);
@@ -146,9 +172,10 @@ exports.releaseCurrentSnapshot = function(id) {
         return;
       }
       logger.debug('releaseCurrentSnapshot exit');
+      cache[queryurl] = id;
       resolve(id);
     });
-  });
+  }, queryurl);
 };
 
 exports.getTlsProfile = function(snapshot, tlsProfleName) {
@@ -167,7 +194,7 @@ exports.getTlsProfile = function(snapshot, tlsProfleName) {
 
   // send request to data-store to get the reqiested TLS Profile
   // for matching API(s)
-  return new Promise(function(resolve, reject) {
+  return cachedPromise((resolve, reject) => {
     request({ url: queryurl, json: true }, function(error, response, body) {
       logger.debug('error: ', error);
       logger.debug('body: %j', body);
@@ -179,7 +206,7 @@ exports.getTlsProfile = function(snapshot, tlsProfleName) {
       }
       resolve(body);
     });
-  });
+  }, queryurl);
 };
 
 exports.getRegistry = function(snapshot, registryName) {
@@ -198,7 +225,7 @@ exports.getRegistry = function(snapshot, registryName) {
 
   // send request to data-store to get the requested Registry Profile
   // for matching API(s)
-  return new Promise(function(resolve, reject) {
+  return cachedPromise((resolve, reject) => {
     request({ url: queryurl, json: true }, function(error, response, body) {
       logger.debug('error: ', error);
       logger.debug('body: %j', body);
@@ -208,9 +235,10 @@ exports.getRegistry = function(snapshot, registryName) {
         reject(error);
         return;
       }
+      cache[queryurl] = body;
       resolve(body);
     });
-  });
+  }, queryurl);
 };
 
 exports.getAppInfo = function(snapshot, subscriptionId, clientId, done) {
@@ -229,28 +257,34 @@ exports.getAppInfo = function(snapshot, subscriptionId, clientId, done) {
   var queryurl = url.format(queryurlObj);
   // send request to optimizedData model from data-store
   // for matching API(s)
-  request({ url: queryurl, json: true }, function(error, response, body) {
-    logger.debug('error: ', error);
-    // exit early on error
-    if (error) {
-      done(error);
-      return;
-    }
-    var subscriptions = body;
-    //TODO: double check the clientId in the body.application['app-credentials'] ????
-    if (!subscriptions || subscriptions.length === 0) {
-      done(new Error('no matched application'));
-      return;
-    }
-    var rev = subscriptions[0].application;
-    logger.debug('found application record:', rev.title);
-    //remove unnecessary fields before return
-    var credential = rev['app-credentials'][0];
-    delete rev['app-credentials'];
-    rev['client-id'] = credential['client-id'];
-    rev['client-secret'] = credential['client-secret'];
-    done(undefined, rev);
-  });
+  const cached = cache[queryurl];
+  if (cached && useCache) {
+    done(undefined, cached);
+  } else {
+    request({ url: queryurl, json: true }, function(error, response, body) {
+      logger.debug('error: ', error);
+      // exit early on error
+      if (error) {
+        done(error);
+        return;
+      }
+      var subscriptions = body;
+      //TODO: double check the clientId in the body.application['app-credentials'] ????
+      if (!subscriptions || subscriptions.length === 0) {
+        done(new Error('no matched application'));
+        return;
+      }
+      var rev = subscriptions[0].application;
+      logger.debug('found application record:', rev.title);
+      //remove unnecessary fields before return
+      var credential = rev['app-credentials'][0];
+      delete rev['app-credentials'];
+      rev['client-id'] = credential['client-id'];
+      rev['client-secret'] = credential['client-secret'];
+      cache[queryurl] = rev;
+      done(undefined, rev);
+    });
+  }
 };
 
 //Find clinet(s) by the client id and the application id.
@@ -271,19 +305,24 @@ function getClientById(snapshot, clientId, apiId, done) {
     query: { filter: JSON.stringify(queryfilter) } };
   var queryurl = url.format(queryurlObj);
 
-  request({ url: queryurl, json: true }, function(error, response, body) {
-    if (error) {
-      logger.debug('error: ', error);
-      return done(error);
-    }
+  const cached = cache[queryurl];
+  if (cached && useCache) {
+    done(undefined, cached);
+  } else {
+    request({ url: queryurl, json: true }, function(error, response, body) {
+      if (error) {
+        logger.debug('error: ', error);
+        return done(error);
+      }
 
-    var optimizedData = body;
-    if (!optimizedData || optimizedData.length === 0) {
-      return done('no matched client');
-    }
-
-    done(undefined, optimizedData);
-  });
+      var optimizedData = body;
+      if (!optimizedData || optimizedData.length === 0) {
+        return done('no matched client');
+      }
+      cache[queryurl] = optimizedData;
+      done(undefined, optimizedData);
+    });
+  }
 };
 exports.getClientById = getClientById;
 
