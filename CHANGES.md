@@ -1,3 +1,9 @@
+2018-02-07, Version 1.0.2
+=========================
+
+ * - added local cache for http-responses in client (Anton Korotkikh)
+
+
 2017-07-27, Version 1.0.1
 =========================
 
