@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "apiconnect-cli-logger": "^1.x",
-    "apiconnect-project": "^1.x",
+    "apiconnect-project": "^2.0.0",
     "bluebird": "^3.3.3",
     "compression": "^1.6.1",
     "cors": "^2.7.1",
