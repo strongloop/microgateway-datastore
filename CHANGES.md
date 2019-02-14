@@ -1,3 +1,9 @@
+2019-02-14, Version 1.0.3
+=========================
+
+ * Update vulnerable dependencies (Gary Tu)
+
+
 2018-02-07, Version 1.0.2
 =========================
 
