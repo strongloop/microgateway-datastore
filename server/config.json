@@ -3,9 +3,6 @@
   "host": "localhost",
   "port": 0,
   "remoting": {
-    "context": {
-      "enableHttpContext": false
-    },
     "rest": {
       "normalizeHttpPath": false,
       "xml": false
