@@ -18,7 +18,7 @@ exports.start = function(fork) {
   return new Promise(function(resolve, reject) {
     if (fork) {
       child = new (forever.Monitor)(path.resolve(__dirname, 'server/server.js'), {
-        max: 10,
+        max: Number.MAX_SAFE_INTEGER,
         args: [],
         fork: true,
         killTree: true,
