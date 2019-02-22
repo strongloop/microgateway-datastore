@@ -1,3 +1,15 @@
+2019-02-22, Version 1.0.4
+=========================
+
+ * Update dependency version (Gary Tu)
+
+ * Increase restart count (Gary Tu)
+
+ * Fix deprecated warning for loopback context (Gary Tu)
+
+ * Fix loopback error handler and context config (Gary Tu)
+
+
 2019-02-14, Version 1.0.3
 =========================
 

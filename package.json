@@ -1,6 +1,6 @@
 {
   "name": "microgateway-datastore",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "datastore used by the microgateway",
   "main": "index.js",
   "dependencies": {
